@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SMK IPTEK TANGSEL</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page-transition"></div>
+    
+    <header class="header admin-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="Image/LOGO-SMK-IPTEK.png" alt="Logo SMK IPTEL TANGSEL" class="school-logo">
+                    <span class="site-name">ADMIN DASHBOARD</span>
+                </div>
+                <div class="admin-actions">
+                    <span class="admin-welcome">Welcome, Admin</span>
+                    <button onclick="handleLogout()" class="btn-logout">LOGOUT</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="#" class="sidebar-link active" onclick="showSection('ekskul')">
+                    📚 Kelola Ekskul
+                </a>
+                <a href="#" class="sidebar-link" onclick="showSection('events')">
+                    🎉 Kelola Event
+                </a>
+                <a href="#" class="sidebar-link" onclick="showSection('schedule')">
+                    📅 Kelola Jadwal
+                </a>
+                <a href="#" class="sidebar-link" onclick="showSection('gallery')">
+                    🖼️ Kelola Galeri
+                </a>
+                
+            </nav>
+        </aside>
+
+        <main class="dashboard-main">
+            <section id="ekskulSection" class="dashboard-section active">
+                <div class="section-header">
+                    <h2>KELOLA EKSTRAKURIKULER</h2>
+                    <button onclick="showAddEkskulForm()" class="btn-add">+ TAMBAH EKSKUL</button>
+                </div>
+
+                <div id="addEkskulForm" class="form-container" style="display: none;">
+                    <h3>Tambah Ekskul Baru</h3>
+                    <form onsubmit="handleAddEkskul(event)">
+                        <div class="form-group">
+                            <label>Nama Ekskul</label>
+                            <input type="text" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Icon (emoji)</label>
+                            <input type="text" name="icon" required placeholder="🏀">
+                        </div>
+                        <div class="form-group">
+                            <label>Deskripsi Singkat</label>
+                            <textarea name="description" required rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Deskripsi Lengkap</label>
+                            <textarea name="fullDescription" required rows="5"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Jadwal</label>
+                            <input type="text" name="schedule" required placeholder="Senin & Rabu, 15:00 - 17:00">
+                        </div>
+                        <div class="form-group">
+                            <label>Link Google Form</label>
+                            <input type="url" name="formLink" required placeholder="https://forms.google.com/...">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-submit">SIMPAN</button>
+                            <button type="button" onclick="hideAddEkskulForm()" class="btn-cancel">BATAL</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Icon</th>
+                                <th>Nama</th>
+                                <th>Deskripsi</th>
+                                <th>Jadwal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ekskulTableBody">
+                             
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Modified image upload section to support 4 photos instead of 6 -->
+                <div id="imageUploadSection" class="image-upload-section" style="display: none;">
+                    <h3>Upload Foto untuk <span id="uploadEkskulName"></span></h3>
+                    <p class="upload-instruction">Upload 4 foto kegiatan ekstrakurikuler</p>
+                    
+                    <div class="upload-grid">
+                        <div class="upload-slot" onclick="triggerFileInput(0)">
+                            <input type="file" id="imageInput0" accept="image/*" style="display: none;" onchange="handleSingleImageUpload(0, event)">
+                            <div class="upload-placeholder" id="placeholder0">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 1</p>
+                            </div>
+                            <img id="preview0" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="remove0" style="display: none;" onclick="event.stopPropagation(); removeSlotImage(0)">✕</button>
+                        </div>
+                        
+                        <div class="upload-slot" onclick="triggerFileInput(1)">
+                            <input type="file" id="imageInput1" accept="image/*" style="display: none;" onchange="handleSingleImageUpload(1, event)">
+                            <div class="upload-placeholder" id="placeholder1">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 2</p>
+                            </div>
+                            <img id="preview1" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="remove1" style="display: none;" onclick="event.stopPropagation(); removeSlotImage(1)">✕</button>
+                        </div>
+                        
+                        <div class="upload-slot" onclick="triggerFileInput(2)">
+                            <input type="file" id="imageInput2" accept="image/*" style="display: none;" onchange="handleSingleImageUpload(2, event)">
+                            <div class="upload-placeholder" id="placeholder2">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 3</p>
+                            </div>
+                            <img id="preview2" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="remove2" style="display: none;" onclick="event.stopPropagation(); removeSlotImage(2)">✕</button>
+                        </div>
+                        
+                        <div class="upload-slot" onclick="triggerFileInput(3)">
+                            <input type="file" id="imageInput3" accept="image/*" style="display: none;" onchange="handleSingleImageUpload(3, event)">
+                            <div class="upload-placeholder" id="placeholder3">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 4</p>
+                            </div>
+                            <img id="preview3" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="remove3" style="display: none;" onclick="event.stopPropagation(); removeSlotImage(3)">✕</button>
+                        </div>
+                    </div>
+                    
+                    <p class="upload-note">Format: JPG, PNG | Maksimal 2MB per foto</p>
+                    
+                    <div class="form-actions">
+                        <button onclick="saveImages()" class="btn-submit">SIMPAN FOTO</button>
+                        <button onclick="closeImageUpload()" class="btn-cancel">TUTUP</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="eventsSection" class="dashboard-section">
+                <div class="section-header">
+                    <h2>KELOLA EVENT</h2>
+                    <button onclick="showAddEventForm()" class="btn-add">+ TAMBAH EVENT</button>
+                </div>
+
+                <div id="addEventForm" class="form-container" style="display: none;">
+                    <h3>Tambah Event Baru</h3>
+                    <form onsubmit="handleAddEvent(event)">
+                        <div class="form-group">
+                            <label>Nama Event</label>
+                            <input type="text" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal</label>
+                            <input type="date" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Deskripsi</label>
+                            <textarea name="description" required rows="4"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-submit">SIMPAN</button>
+                            <button type="button" onclick="hideAddEventForm()" class="btn-cancel">BATAL</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Event</th>
+                                <th>Tanggal</th>
+                                <th>Deskripsi</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventsTableBody">
+                              
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Added event photo upload section similar to ekskul -->
+                <div id="eventImageUploadSection" class="image-upload-section" style="display: none;">
+                    <h3>Upload Foto untuk Event: <span id="uploadEventName"></span></h3>
+                    <p class="upload-instruction">Upload 1 foto untuk event ini</p>
+                    
+                    <div class="upload-grid">
+                        <div class="upload-slot" onclick="triggerEventFileInput()">
+                            <input type="file" id="eventImageInput" accept="image/*" style="display: none;" onchange="handleEventImageUpload(event)">
+                            <div class="upload-placeholder" id="eventPlaceholder">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto Event</p>
+                            </div>
+                            <img id="eventPreview" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="eventRemove" style="display: none;" onclick="event.stopPropagation(); removeEventImage()">✕</button>
+                        </div>
+                    </div>
+                    
+                    <p class="upload-note">Format: JPG, PNG | Maksimal 2MB</p>
+                    
+                    <div class="form-actions">
+                        <button onclick="saveEventImage()" class="btn-submit">SIMPAN FOTO</button>
+                        <button onclick="closeEventImageUpload()" class="btn-cancel">TUTUP</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="scheduleSection" class="dashboard-section">
+                <div class="section-header">
+                    <h2>KELOLA JADWAL</h2>
+                    <p class="section-note">Jadwal akan otomatis diambil dari data ekskul yang sudah ditambahkan</p>
+                </div>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ekskul</th>
+                                <th>Jadwal</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleTableBody">
+                              
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Added new gallery management section -->
+            <section id="gallerySection" class="dashboard-section">
+                <div class="section-header">
+                    <h2>KELOLA GALERI GRID</h2>
+                    <p class="section-note">Upload foto untuk galeri grid di halaman utama (maksimal 10 foto)</p>
+                </div>
+
+                <div class="gallery-upload-actions">
+                    <button class="btn-gallery-trigger" onclick="triggerGalleryInput(0)">Foto 1</button>
+                    <button class="btn-gallery-trigger" onclick="triggerGalleryInput(1)">Foto 2</button>
+                    <button class="btn-gallery-trigger" onclick="triggerGalleryInput(2)">Foto 3</button>
+                    <button class="btn-gallery-trigger" onclick="triggerGalleryInput(3)">Foto 4</button>
+                    <button class="btn-gallery-trigger" onclick="triggerGalleryInput(4)">Foto 5</button>
+                    <button class="btn-gallery-trigger" onclick="triggerGalleryInput(5)">Foto 6</button>
+                    <button class="btn-gallery-trigger" onclick="triggerGalleryInput(6)">Foto 7</button>
+                    <button class="btn-gallery-trigger" onclick="triggerGalleryInput(7)">Foto 8</button>
+                    <button class="btn-gallery-trigger" onclick="triggerGalleryInput(8)">Foto 9</button>
+                    <button class="btn-gallery-trigger" onclick="triggerGalleryInput(9)">Foto 10</button>
+                </div>
+
+                <div class="gallery-upload-container">
+                    <div class="upload-grid-gallery">
+                        <div class="upload-slot-gallery" onclick="triggerGalleryInput(0)">
+                            <input type="file" id="galleryInput0" accept="image/*" style="display: none;" onchange="handleGalleryImageUpload(0, event)">
+                            <div class="upload-placeholder" id="galleryPlaceholder0">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 1</p>
+                            </div>
+                            <img id="galleryPreview0" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="galleryRemove0" style="display: none;" onclick="event.stopPropagation(); removeGalleryImage(0)">✕</button>
+                        </div>
+                        
+                        <div class="upload-slot-gallery" onclick="triggerGalleryInput(1)">
+                            <input type="file" id="galleryInput1" accept="image/*" style="display: none;" onchange="handleGalleryImageUpload(1, event)">
+                            <div class="upload-placeholder" id="galleryPlaceholder1">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 2</p>
+                            </div>
+                            <img id="galleryPreview1" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="galleryRemove1" style="display: none;" onclick="event.stopPropagation(); removeGalleryImage(1)">✕</button>
+                        </div>
+                        
+                        <div class="upload-slot-gallery" onclick="triggerGalleryInput(2)">
+                            <input type="file" id="galleryInput2" accept="image/*" style="display: none;" onchange="handleGalleryImageUpload(2, event)">
+                            <div class="upload-placeholder" id="galleryPlaceholder2">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 3</p>
+                            </div>
+                            <img id="galleryPreview2" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="galleryRemove2" style="display: none;" onclick="event.stopPropagation(); removeGalleryImage(2)">✕</button>
+                        </div>
+                        
+                        <div class="upload-slot-gallery" onclick="triggerGalleryInput(3)">
+                            <input type="file" id="galleryInput3" accept="image/*" style="display: none;" onchange="handleGalleryImageUpload(3, event)">
+                            <div class="upload-placeholder" id="galleryPlaceholder3">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 4</p>
+                            </div>
+                            <img id="galleryPreview3" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="galleryRemove3" style="display: none;" onclick="event.stopPropagation(); removeGalleryImage(3)">✕</button>
+                        </div>
+                        
+                        <div class="upload-slot-gallery" onclick="triggerGalleryInput(4)">
+                            <input type="file" id="galleryInput4" accept="image/*" style="display: none;" onchange="handleGalleryImageUpload(4, event)">
+                            <div class="upload-placeholder" id="galleryPlaceholder4">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 5</p>
+                            </div>
+                            <img id="galleryPreview4" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="galleryRemove4" style="display: none;" onclick="event.stopPropagation(); removeGalleryImage(4)">✕</button>
+                        </div>
+                        
+                        <div class="upload-slot-gallery" onclick="triggerGalleryInput(5)">
+                            <input type="file" id="galleryInput5" accept="image/*" style="display: none;" onchange="handleGalleryImageUpload(5, event)">
+                            <div class="upload-placeholder" id="galleryPlaceholder5">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 6</p>
+                            </div>
+                            <img id="galleryPreview5" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="galleryRemove5" style="display: none;" onclick="event.stopPropagation(); removeGalleryImage(5)">✕</button>
+                        </div>
+                        
+                        <div class="upload-slot-gallery" onclick="triggerGalleryInput(6)">
+                            <input type="file" id="galleryInput6" accept="image/*" style="display: none;" onchange="handleGalleryImageUpload(6, event)">
+                            <div class="upload-placeholder" id="galleryPlaceholder6">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 7</p>
+                            </div>
+                            <img id="galleryPreview6" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="galleryRemove6" style="display: none;" onclick="event.stopPropagation(); removeGalleryImage(6)">✕</button>
+                        </div>
+                        
+                        <div class="upload-slot-gallery" onclick="triggerGalleryInput(7)">
+                            <input type="file" id="galleryInput7" accept="image/*" style="display: none;" onchange="handleGalleryImageUpload(7, event)">
+                            <div class="upload-placeholder" id="galleryPlaceholder7">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 8</p>
+                            </div>
+                            <img id="galleryPreview7" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="galleryRemove7" style="display: none;" onclick="event.stopPropagation(); removeGalleryImage(7)">✕</button>
+                        </div>
+                        
+                        <div class="upload-slot-gallery" onclick="triggerGalleryInput(8)">
+                            <input type="file" id="galleryInput8" accept="image/*" style="display: none;" onchange="handleGalleryImageUpload(8, event)">
+                            <div class="upload-placeholder" id="galleryPlaceholder8">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 9</p>
+                            </div>
+                            <img id="galleryPreview8" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="galleryRemove8" style="display: none;" onclick="event.stopPropagation(); removeGalleryImage(8)">✕</button>
+                        </div>
+                        
+                        <div class="upload-slot-gallery" onclick="triggerGalleryInput(9)">
+                            <input type="file" id="galleryInput9" accept="image/*" style="display: none;" onchange="handleGalleryImageUpload(9, event)">
+                            <div class="upload-placeholder" id="galleryPlaceholder9">
+                                <span class="upload-icon">📸</span>
+                                <p>Foto 10</p>
+                            </div>
+                            <img id="galleryPreview9" class="image-preview" style="display: none;">
+                            <button class="btn-remove-slot" id="galleryRemove9" style="display: none;" onclick="event.stopPropagation(); removeGalleryImage(9)">✕</button>
+                        </div>
+                    </div>
+                    
+                    <p class="upload-note">Format: JPG, PNG | Maksimal 2MB per foto</p>
+                    
+                    <div class="form-actions">
+                        <button onclick="saveGalleryImages()" class="btn-submit">SIMPAN SEMUA FOTO</button>
+                        <button onclick="clearAllGallery()" class="btn-cancel">HAPUS SEMUA</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Check if user is logged in
+        window.addEventListener('DOMContentLoaded', function() {
+            if (!isLoggedIn()) {
+                window.location.href = 'admin-login.html';
+            }
+            loadDashboardData();
+        });
+
+        function triggerFileInput(index) {
+            document.getElementById(`imageInput${index}`).click();
+        }
+
+        function triggerEventFileInput() {
+            document.getElementById('eventImageInput').click();
+        }
+
+        function triggerGalleryInput(index) {
+            document.getElementById(`galleryInput${index}`).click();
+        }
+
+    </script>
+</body>
+</html>

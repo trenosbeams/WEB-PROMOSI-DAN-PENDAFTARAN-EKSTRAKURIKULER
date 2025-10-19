@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - SMK IPTEK TANGSEL</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page-transition"></div> <!-- Added page transition overlay -->
+    
+    <div class="login-page">
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-header">
+                    <!-- Replaced emoji with actual school logo -->
+                    <img src="Image/LOGO-SMK-IPTEK.png" alt="Logo SMK IPTEL TANGSEL" class="school-logo-large">
+                    <h1>ADMIN LOGIN</h1>
+                    <p>SMK IPTEK TANGSEL</p>
+                </div>
+                
+                <form class="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="username">USERNAME</label>
+                        <input type="text" id="username" name="username" required placeholder="Masukkan username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">PASSWORD</label>
+                        <input type="password" id="password" name="password" required placeholder="Masukkan password">
+                    </div>
+                    
+                    <div id="loginError" class="error-message"></div>
+                    
+                    <button type="submit" class="btn-submit">LOGIN</button>
+                    
+                
+                </form>
+                
+                <a href="index.html" class="back-to-home">← Kembali ke Beranda</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
